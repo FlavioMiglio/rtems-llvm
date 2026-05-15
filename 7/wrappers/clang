@@ -1,0 +1,23 @@
+#!/bin/bash
+REAL_CLANG="../bin/clang"
+REAL_GCC="../bin/aarch64-rtems7-gcc" # TODO: should get the --target and pick the correct gcc from there
+
+args=()
+link=1
+for a in "$@"; do
+  case "$a" in
+    -c|-S|-E) link=0 ;;
+  esac
+  args+=("$a")
+done
+
+if [[ $link -eq 0 ]]; then
+  exec "$REAL_CLANG" "${args[@]}"
+else
+  filtered=()
+  for a in "${args[@]}"; do
+    [[ $a == --target=* ]] && continue
+    filtered+=("$a")
+  done
+  exec "$REAL_GCC" -qrtems "${filtered[@]}"
+fi
