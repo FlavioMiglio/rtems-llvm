@@ -12,5 +12,9 @@ In the following commands we will use the prefix `$HOME/rtems-llvm/7` as an exam
 
 ## Building the toolchain with RSB
 
-    .build-toolchain.sh --prefix "$HOME/rtems/7" --gcc-bset 7/rtems-aarch64
+    ./build-toolchain.sh --prefix "$HOME/rtems/7" --gcc-bset 7/rtems-aarch64
+
+## Building the BSP
+
+    ./build-bsp.sh --prefix "$HOME/rtems/7" --bsp aarch64/a72_lp64_qemu
 

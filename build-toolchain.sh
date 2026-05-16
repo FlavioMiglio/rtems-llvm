@@ -2,7 +2,7 @@
 set -euo pipefail
 
 usage() {
-	echo "Usage: $0 --prefix <path> --gcc-bset <bset> [--llvm-bset <bset>]" >&2
+	echo "Usage: $0 --prefix <path> --gcc-bset <bset>" >&2
 	echo "Example: $0 --prefix \"$HOME/dev/COT-RSB/7\" --gcc-bset 7/rtems-aarch64" >&2
 }
 
@@ -18,10 +18,6 @@ while [[ $# -gt 0 ]]; do
 			;;
 		--gcc-bset)
 			gcc_bset="$2"
-			shift 2
-			;;
-		--llvm-bset)
-			llvm_bset="$2"
 			shift 2
 			;;
 		-h|--help)
@@ -41,7 +37,7 @@ if [[ -z "$prefix" || -z "$gcc_bset" ]]; then
 	exit 1
 fi
 
-cd rsb/rtems
+cd src/rtems-rsb/rtems
 
 # First, we build the gcc toolchain, for the libraries and runtimes
 ../source-builder/sb-set-builder --prefix="$prefix" "$gcc_bset"
