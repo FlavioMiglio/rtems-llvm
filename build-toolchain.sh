@@ -43,7 +43,7 @@ cd src/rtems-rsb/rtems
 ../source-builder/sb-set-builder --prefix="$prefix" "$gcc_bset"
 
 # Some files get overwritten by the second toolchain install and write permissions are needed
-find $prefix -not -writable -user $USER -exec chmod u+w {} \;
+chmod -R u+w "$prefix"
 
 # Then we build the rtems-llvm toolchain
 ../source-builder/sb-set-builder --prefix="$prefix" "$llvm_bset"
