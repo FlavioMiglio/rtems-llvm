@@ -42,6 +42,9 @@ cd src/rtems-rsb/rtems
 # First, we build the gcc toolchain, for the libraries and runtimes
 ../source-builder/sb-set-builder --prefix="$prefix" "$gcc_bset"
 
+# Some files get overwritten by the second toolchain install and write permissions are needed
+find $prefix -not -writable -user $USER -exec chmod u+w {} \;
+
 # Then we build the rtems-llvm toolchain
 ../source-builder/sb-set-builder --prefix="$prefix" "$llvm_bset"
 
