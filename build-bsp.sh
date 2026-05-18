@@ -176,4 +176,4 @@ export ASFLAGS="${ASFLAGS_EFFECTIVE}"
 export LDFLAGS="${LDFLAGS_EFFECTIVE}"
 
 ./waf configure --prefix="${PREFIX}" --rtems-tools="${PREFIX}/wrappers"
-./waf -k > build.log 2>&1
+./waf > ../../build.log 2>&1
