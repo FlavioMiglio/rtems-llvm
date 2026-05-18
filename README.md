@@ -2,6 +2,13 @@
 
 #### Flavio Migliorati, Giorgio Barocco, Francesco Bazzano
 
+## Submodule initialization and download
+
+After cloning the repo, initialize and download the two submodules (`rtems` and `rtems-rsb`):
+
+    git submodule init
+    git submodule update
+
 ## Choosing an Installation Prefix
 
 First you have to choose a prefix, which will also be the prefix used for the RTEMS toolchain, so follow the guidance [here](https://docs.rtems.org/docs/main/user/start/prefixes.html) to select an appropriate prefix.
@@ -12,9 +19,9 @@ In the following commands we will use the prefix `$HOME/rtems-llvm/7` as an exam
 
 ## Building the toolchain with RSB
 
-    ./build-toolchain.sh --prefix "$HOME/rtems/7" --gcc-bset 7/rtems-aarch64
+    ./build-toolchain.sh --prefix "$HOME/rtems-llvm/7" --gcc-bset 7/rtems-aarch64
 
 ## Building the BSP
 
-    ./build-bsp.sh --prefix "$HOME/rtems/7" --bsp aarch64/a72_lp64_qemu
+    ./build-bsp.sh --prefix "$HOME/rtems-llvm/7" --bsp aarch64/a72_lp64_qemu
 
