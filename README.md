@@ -9,6 +9,10 @@ After cloning the repo, initialize and download the two submodules (`rtems` and 
     git submodule init
     git submodule update
 
+## Install build dependencies
+
+Install the dependencies required by the RSB by following [this guide](https://docs.rtems.org/docs/main/user/hosts/index.html)
+
 ## Choosing an Installation Prefix
 
 First you have to choose a prefix, which will also be the prefix used for the RTEMS toolchain, so follow the guidance [here](https://docs.rtems.org/docs/main/user/start/prefixes.html) to select an appropriate prefix.
