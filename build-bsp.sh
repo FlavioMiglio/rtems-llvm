@@ -1,5 +1,7 @@
 #!/bin/bash
-clear
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
 
 # --- 1. Define Paths ---
 usage() {
@@ -17,7 +19,7 @@ while [ "$#" -gt 0 ]; do
     case "$1" in
         --prefix)
             shift
-            if [ -z "$1" ]; then
+            if [ $# -eq 0 ] || [ -z "${1:-}" ]; then
                 echo "error: --prefix requires an argument" >&2
                 usage
                 exit 2
@@ -34,7 +36,7 @@ while [ "$#" -gt 0 ]; do
             ;;
         --bsp)
             shift
-            if [ -z "$1" ]; then
+            if [ $# -eq 0 ] || [ -z "${1:-}" ]; then
                 echo "error: --bsp requires an argument" >&2
                 usage
                 exit 2
@@ -101,6 +103,14 @@ CLANG_BIN="${PREFIX}/bin/clang"
 CLANGXX_BIN="${PREFIX}/bin/clang++"
 GCC_BIN="${PREFIX}/bin/${TARGET}-gcc"
 GXX_BIN="${PREFIX}/bin/${TARGET}-g++"
+
+for tool in "${CLANG_BIN}" "${CLANGXX_BIN}" "${GCC_BIN}" "${GXX_BIN}"; do
+    if [ ! -x "${tool}" ]; then
+        echo "error: required tool not found or not executable: ${tool}" >&2
+        exit 1
+    fi
+done
+
 CLANG_RESOURCE_DIR="$(${CLANG_BIN} --print-resource-dir)"
 GCC_INCLUDE_DIR="$(${GCC_BIN} -print-file-name=include)"
 GCC_INCLUDE_FIXED_DIR="$(${GCC_BIN} -print-file-name=include-fixed)"
@@ -124,6 +134,8 @@ fi
 # Prevent macOS host flags from leaking into the cross-compiler
 unset ARCH ARCHFLAGS CFLAGS CXXFLAGS LDFLAGS CPPFLAGS SDKROOT MACOSX_DEPLOYMENT_TARGET
 
+"${SCRIPT_DIR}/rtems-clang-wrapper.sh" --install --prefix "${PREFIX}" --target "${TARGET}"
+
 cd src/rtems
 
 # Clean previous Waf states
@@ -133,14 +145,27 @@ echo "[$BSP]" > config.ini
 echo "COMPILER = clang" >> config.ini
 
 echo "WARNING_FLAGS = -Wall -Wextra" >> config.ini
-echo "CC_WARNING_FLAGS = -Wno-error -Wmissing-prototypes -Wimplicit-function-declaration -Wstrict-prototypes -Wnested-externs -Wno-asm-operand-widths" >> config.ini
+echo "CC_WARNING_FLAGS = -Wno-error -Wmissing-prototypes -Wimplicit-function-declaration -Wstrict-prototypes -Wnested-externs -Wno-asm-operand-widths -Wno-unknown-warning-option" >> config.ini
 echo "BUILD_SAMPLES = True" >> config.ini
 echo "BUILD_TESTS = True" >> config.ini
 
-COMMON_FLAGS="-D__rtems__ --sysroot=${SYSROOT}"
-# --target=${TARGET}
+CLANG_TARGET_FLAG="--target=${BSP_ARCH}-unknown-rtems7"
 
 ABI_INCLUDE_FLAGS="-I${SYSROOT_INCLUDE_DIR} -I${CLANG_RESOURCE_DIR}/include"
+
+COMMON_FLAGS="-D__rtems__ --sysroot=${SYSROOT}"
+
+case "${BSP}" in
+    arm/stm32f4|arm/stm32f446ze)
+        echo "ABI_FLAGS = -mcpu=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 ${CLANG_TARGET_FLAG} ${COMMON_FLAGS} ${ABI_INCLUDE_FLAGS}" >> config.ini
+        ;;
+    arm/stm32f105rc)
+        echo "ABI_FLAGS = -mthumb -mcpu=cortex-m3 ${CLANG_TARGET_FLAG} ${COMMON_FLAGS} ${ABI_INCLUDE_FLAGS}" >> config.ini
+        ;;
+    *)
+        echo "ABI_FLAGS = ${CLANG_TARGET_FLAG} ${COMMON_FLAGS} ${ABI_INCLUDE_FLAGS}" >> config.ini
+        ;;
+esac
 
 # C include flags for RTEMS/newlib + GCC support headers.
 C_INCLUDE_FLAGS="-isystem ${SYSROOT_INCLUDE_DIR} -isystem ${CLANG_RESOURCE_DIR}/include -isystem ${GCC_INCLUDE_DIR} -isystem ${GCC_INCLUDE_FIXED_DIR}"
@@ -152,20 +177,17 @@ CXX_AFTER_INCLUDE_FLAGS="-idirafter ${SYSROOT_INCLUDE_DIR} -idirafter ${CLANG_RE
 # Assembler preprocessor includes: enough for headers like limits.h used by .S paths.
 AS_INCLUDE_FLAGS="-isystem ${SYSROOT_INCLUDE_DIR} -isystem ${CLANG_RESOURCE_DIR}/include"
 
-CLANG_TARGET_FLAG="--target=${TARGET}"
-
 GCC_VERSION=$(${GCC_BIN} -dumpversion)
 GCC_LIB_DIR="${PREFIX}/lib/gcc/${TARGET}/${GCC_VERSION}"
 
 # -B flags tell Clang where to find the RTEMS linker, assembler, and crt*.o files
 B_FLAGS="-B${SYSROOT}/lib -B${GCC_LIB_DIR} -B${PREFIX}/bin"
 
-CFLAGS_EFFECTIVE="${CLANG_TARGET_FLAG} ${B_FLAGS} ${C_INCLUDE_FLAGS}"
-CXXFLAGS_EFFECTIVE="${CLANG_TARGET_FLAG} ${B_FLAGS} ${CXX_INCLUDE_FLAGS} ${CXX_AFTER_INCLUDE_FLAGS}"
-ASFLAGS_EFFECTIVE="${CLANG_TARGET_FLAG} ${B_FLAGS} ${AS_INCLUDE_FLAGS}"
-LDFLAGS_EFFECTIVE="${CLANG_TARGET_FLAG} ${COMMON_FLAGS} ${B_FLAGS} -L${SYSROOT}/lib -L${GCC_LIB_DIR}"
+CFLAGS_EFFECTIVE="${CLANG_TARGET_FLAG} ${COMMON_FLAGS} ${B_FLAGS} ${C_INCLUDE_FLAGS}"
+CXXFLAGS_EFFECTIVE="${CLANG_TARGET_FLAG} ${COMMON_FLAGS} ${B_FLAGS} ${CXX_INCLUDE_FLAGS} ${CXX_AFTER_INCLUDE_FLAGS}"
+ASFLAGS_EFFECTIVE="${CLANG_TARGET_FLAG} ${COMMON_FLAGS} ${B_FLAGS} ${AS_INCLUDE_FLAGS}"
+LDFLAGS_EFFECTIVE="${CLANG_TARGET_FLAG} ${COMMON_FLAGS} ${B_FLAGS}"
 
-echo "ABI_FLAGS = ${CLANG_TARGET_FLAG} ${COMMON_FLAGS} ${ABI_INCLUDE_FLAGS}" >> config.ini
 echo "RTEMS_POSIX_API = True" >> config.ini
 
 # --- 3. Configure and Build ---
@@ -176,4 +198,18 @@ export ASFLAGS="${ASFLAGS_EFFECTIVE}"
 export LDFLAGS="${LDFLAGS_EFFECTIVE}"
 
 ./waf configure --prefix="${PREFIX}" --rtems-tools="${PREFIX}/wrappers"
-./waf > ../../build.log 2>&1
+
+echo "Logging to file build.log..."
+
+./waf > ../../build.log 2>&1 &
+WAF_PID=$!
+
+tail --pid=$WAF_PID -f ../../build.log
+
+wait $WAF_PID
+
+
+if [ $? -ne 0 ]; then
+    echo "Build failed; rerunning with -v. See build.log for the verbose command output." >&2
+    ./waf -v > ../../build.log 2>&1
+fi
