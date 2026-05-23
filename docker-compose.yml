@@ -1,0 +1,10 @@
+services:
+  rtems-llvm:
+    build:
+      context: .
+    working_dir: /opt/rtems-llvm
+    volumes:
+      - .:/opt/rtems-llvm
+    command: sleep infinity
+    stdin_open: true
+    tty: true
