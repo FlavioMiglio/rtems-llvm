@@ -20,6 +20,7 @@ RUN apt-get update \
         pkg-config \
         git \
         ca-certificates \
+        cmake \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /opt/rtems-llvm

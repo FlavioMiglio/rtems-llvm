@@ -5,6 +5,12 @@ services:
     working_dir: /opt/rtems-llvm
     volumes:
       - .:/opt/rtems-llvm
+      # Creates a native, high-speed Linux volume for the actual compilation
+      - llvm-build:/opt/rtems-llvm/src/rtems-rsb/rtems/build
     command: sleep infinity
     stdin_open: true
     tty: true
+
+# Declare the named volume
+volumes:
+  llvm-build:
