@@ -21,6 +21,7 @@ RUN apt-get update \
         git \
         ca-certificates \
         cmake \
+        qemu-system-arm \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /opt/rtems-llvm
