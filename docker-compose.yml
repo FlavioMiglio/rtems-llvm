@@ -1,5 +1,5 @@
 services:
-  rtems-llvm:
+  dev:
     build:
       context: .
     working_dir: /opt/rtems-llvm
