@@ -1,0 +1,6 @@
+* Proj TODO
+
+- now in optwarnings we ignore all warnings of clang
+- test gcc
+- gcov does not work in clang, find alt solution
+  

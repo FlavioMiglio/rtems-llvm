@@ -9,23 +9,34 @@ After cloning the repo, initialize and download the two submodules (`rtems` and 
     git submodule init
     git submodule update
 
-## Install build dependencies
+## Start the container
 
-Install the dependencies required by the RSB by following [this guide](https://docs.rtems.org/docs/main/user/hosts/index.html)
+    podman compose up -d
+    podman compose exec rtems-llvm /bin/bash
 
-## Choosing an Installation Prefix
+All subsequent commands are run inside the container. The working directory is `/opt/rtems-llvm`.
 
-First you have to choose a prefix, which will also be the prefix used for the RTEMS toolchain, so follow the guidance [here](https://docs.rtems.org/docs/main/user/start/prefixes.html) to select an appropriate prefix.
+## Build the toolchain
 
-Ideally, the prefix should be chosen such that it points to the `7` folder in this repository. Otherwise, copy the content of the folder in your prefix.
+The toolchain is built in two steps using the RTEMS Source Builder (RSB): first the ARM GCC cross-compiler, then the LLVM/Clang toolchain. The prefix `/opt/rtems-llvm/rtems` is already set up inside the container.
 
-In the following commands we will use the prefix `$HOME/rtems-llvm/7` as an example.
+    cd src/rtems-rsb/rtems
 
-## Building the toolchain with RSB
+    ../source-builder/sb-set-builder --prefix=/opt/rtems-llvm/rtems 7/rtems-arm
 
-    ./build-toolchain.sh --prefix "$HOME/rtems-llvm/7" --gcc-bset 7/rtems-aarch64
+    chmod -R u+w /opt/rtems-llvm/rtems
 
-## Building the BSP
+    ../source-builder/sb-set-builder --prefix=/opt/rtems-llvm/rtems 7/rtems-llvm
 
-    ./build-bsp.sh --prefix "$HOME/rtems-llvm/7" --bsp aarch64/a72_lp64_qemu
+## Build the BSP (STM32F4)
 
+    cd /opt/rtems-llvm/src/rtems
+
+    echo "[arm/stm32f4]" > config.ini
+    echo "BUILD_TESTS = True" >> config.ini
+
+    ./waf configure --prefix=/opt/rtems-llvm/rtems
+
+    ./waf
+
+    ./waf install
