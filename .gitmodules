@@ -8,3 +8,5 @@
 [submodule "ASPIS"]
 	path = ASPIS
 	url = https://github.com/HEAPLab/ASPIS
+[submodule "rtems"]
+	branch = main
