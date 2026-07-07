@@ -1,6 +1,7 @@
 [submodule "src/rtems"]
 	path = src/rtems
 	url = https://github.com/FlavioMiglio/rtems
+	branch = main
 [submodule "src/rtems-rsb"]
 	path = src/rtems-rsb
 	url = https://github.com/FlavioMiglio/rtems-rsb

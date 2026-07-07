@@ -1,0 +1,6 @@
+# docker-compose.docker.yml
+services:
+  dev:
+    group_add:
+      - dialout
+      - plugdev

@@ -1,3 +1,4 @@
+# docker-compose.yml
 services:
   dev:
     build:
@@ -12,9 +13,6 @@ services:
     tty: true
     devices:
       - "/dev/ttyUSB0:/dev/ttyUSB0:rw"
-    group_add:
-      - dialout
-      - plugdev
     security_opt:
       - label=disable
       - apparmor=unconfined

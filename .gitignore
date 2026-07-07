@@ -2,3 +2,4 @@
 !7/wrappers/
 build.log
 rtems-clang-wrapper.conf
+rtems/*
