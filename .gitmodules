@@ -4,3 +4,6 @@
 [submodule "src/rtems-rsb"]
 	path = src/rtems-rsb
 	url = https://github.com/FlavioMiglio/rtems-rsb
+[submodule "ASPIS"]
+	path = ASPIS
+	url = https://github.com/HEAPLab/ASPIS

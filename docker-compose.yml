@@ -5,12 +5,19 @@ services:
     working_dir: /opt/rtems-llvm
     volumes:
       - .:/opt/rtems-llvm
-      # Creates a native, high-speed Linux volume for the actual compilation
       - llvm-build:/opt/rtems-llvm/src/rtems-rsb/rtems/build
+      - /dev/bus/usb:/dev/bus/usb
     command: sleep infinity
     stdin_open: true
     tty: true
+    devices:
+      - "/dev/ttyUSB0:/dev/ttyUSB0:rw"
+    group_add:
+      - keep-groups
+    security_opt:
+      - label=disable
+    annotations:
+      run.oci.keep_original_groups: "1"
 
-# Declare the named volume
 volumes:
   llvm-build:
