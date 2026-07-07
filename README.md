@@ -1,7 +1,6 @@
-```python
-# Creating a text file containing the complete, optimized README so the user can easily copy it or download it.
-readme_content = """# ASPIS hardening POC for RTEMS + LLVM
-**Authors:** Flavio Migliorati, Giorgio Barocco, Francesco Bazzano
+
+# ASPIS hardening POC for RTEMS + LLVM
+
 
 ## 1. Hardware Setup (STM32F4 Discovery)
 To run this POC, you need an STM32F4 Discovery board and a USB-to-UART adapter.

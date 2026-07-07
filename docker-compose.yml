@@ -13,11 +13,11 @@ services:
     devices:
       - "/dev/ttyUSB0:/dev/ttyUSB0:rw"
     group_add:
-      - keep-groups
+      - dialout
+      - plugdev
     security_opt:
       - label=disable
-    annotations:
-      run.oci.keep_original_groups: "1"
+      - apparmor=unconfined
 
 volumes:
   llvm-build:
