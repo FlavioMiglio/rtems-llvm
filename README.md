@@ -33,8 +33,8 @@ Use either Docker or Podman to start the containerized environment. All subseque
 **Using Docker:**
 
 ```bash
-docker compose up -d
-docker compose exec rtems-llvm /bin/bash
+docker compose -f docker-compose.yml -f docker-compose.podman.yml up -d
+docker compose exec dev /bin/bash
 
 ```
 
@@ -43,7 +43,7 @@ docker compose exec rtems-llvm /bin/bash
 
 ```bash
 podman-compose -f docker-compose.yml -f docker-compose.podman.yml up -d
-podman compose exec rtems-llvm /bin/bash
+podman compose exec dev /bin/bash
 
 ```
 
@@ -119,5 +119,3 @@ st-flash write aspis_sample.bin 0x8000000
 
 **4. Run the program:**
 Press the physical **Reset** button on the STM32F4 Discovery board (the cylindrical red button on the right side of the board, usually labeled "B2" or "RESET"). You should now see the program output in the `picocom` terminal.
-
-```
