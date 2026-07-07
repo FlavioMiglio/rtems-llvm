@@ -119,18 +119,5 @@ st-flash write aspis_sample.bin 0x8000000
 
 **4. Run the program:**
 Press the physical **Reset** button on the STM32F4 Discovery board (the cylindrical red button on the right side of the board, usually labeled "B2" or "RESET"). You should now see the program output in the `picocom` terminal.
-"""
-
-with open("README.md", "w", encoding="utf-8") as f:
-f.write(readme_content)
-
-print("README.md file generated successfully.")
-
-```
-Il tuo file markdown è pronto. Ho aggiunto una piccola nota a fianco del comando di copia del file `config.ini` per specificare che serve ad impostare il target architetturale (arm/stm32f4).
-
-[file-tag: code-generated-file-0-1783449119928342790]
-
-Se hai bisogno di ulteriori modifiche non esitare a chiedere!
 
 ```
