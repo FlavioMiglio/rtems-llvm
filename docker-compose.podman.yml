@@ -1,0 +1,6 @@
+services:
+  dev:
+    group_add:
+      - keep-groups
+    annotations:
+      run.oci.keep_original_groups: "1"
