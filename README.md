@@ -12,11 +12,6 @@ To run this POC, you need an STM32F4 Discovery board and a USB-to-UART adapter.
    * **GND** -> **GND**
 3. Plug the UART adapter into your PC. Identify the assigned serial port (e.g., `/dev/ttyUSB0` or `/dev/ttyACM0`) by running:
 
-```
-
-```text
-README.md file generated successfully.
-
 ```bash
    dmesg | grep -i tty
 
