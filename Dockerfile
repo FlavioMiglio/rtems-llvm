@@ -22,6 +22,8 @@ RUN apt-get update \
         ca-certificates \
         cmake \
         qemu-system-arm \
+        stlink-tools \
+        picocom \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /opt/rtems-llvm

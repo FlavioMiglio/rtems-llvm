@@ -118,4 +118,8 @@ st-flash write aspis_sample.bin 0x8000000
 ```
 
 **4. Run the program:**
-Press the physical **Reset** button on the STM32F4 Discovery board (the cylindrical red button on the right side of the board, usually labeled "B2" or "RESET"). You should now see the program output in the `picocom` terminal.
+Press the physical **Reset** button on the STM32F4 Discovery board (the cylindrical black button on the right side of the board, usually labeled "B2" or "RESET"). You should now see the program output in the `picocom` terminal.
+
+## 8. Examples of fault injection
+
+To perform a fault injection on an sample application follow [this guide](fault_injection.md)
