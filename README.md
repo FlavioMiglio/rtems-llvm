@@ -97,7 +97,7 @@ Convert the compiled binary into a format suitable for flashing, then monitor th
 **1. Convert the binary:**
 
 ```bash
-arm-rtems7-objcopy -O binary /opt/rtems-llvm/src/rtems/build/arm/stm32f4/testsuites/samples/aspis_sample aspis_sample.bin
+arm-rtems7-objcopy -O binary /opt/rtems-llvm/src/rtems/build/arm/stm32f4/testsuites/samples/aspis_sample.exe aspis_sample.bin
 
 ```
 
