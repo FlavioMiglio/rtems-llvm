@@ -5,8 +5,8 @@ This guide provides instructions on how to perform fault injection on a basic ma
 ## The Test Payload
 
 We use a basic matrix multiplication workload as our test case. The source code is located at:
-* **Standard:** [workload.c](src/rtems/testsuites/samples/aspis_sample/workload.c)
-* **Hardened:** [workload.c](src/rtems/testsuites/samples/aspis_sample_hardened/workload.c)
+* **Standard:** [workload.c](https://github.com/FlavioMiglio/rtems/blob/main/testsuites/samples/aspis_sample/workload.c)
+* **Hardened:** [workload.c](https://github.com/FlavioMiglio/rtems/blob/main/testsuites/samples/aspis_sample_hardened/workload.c)
 
 Here is the core logic:
 
