@@ -123,3 +123,5 @@ Press the physical **Reset** button on the STM32F4 Discovery board (the cylindri
 ## 8. Examples of fault injection
 
 To perform a fault injection on an sample application follow [this guide](fault_injection.md)
+
+(TODO): add docs for kernel fault injection
